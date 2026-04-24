@@ -58,7 +58,7 @@ export const api = {
       proteinGrams: input.proteinGrams
     }),
   scanImages: (input: {
-    images: { uri: string; fileName?: string | null; mimeType?: string | null }[];
+    images: { uri: string; fileName?: string | null }[];
     productName?: string;
     sugarGrams?: number;
     proteinGrams?: number;
@@ -68,7 +68,7 @@ export const api = {
       formData.append("labelImages", {
         uri: image.uri,
         name: image.fileName ?? `ingredient-label-${index + 1}.jpg`,
-        type: image.mimeType ?? "image/jpeg"
+        type: "image/jpeg"
       } as unknown as Blob);
     });
     if (input.productName) formData.append("productName", input.productName);

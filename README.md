@@ -31,7 +31,7 @@ The API runs on `http://localhost:4000/api` and the Expo web app runs on `http:/
 For a physical mobile device, set `EXPO_PUBLIC_API_URL` to your machine's LAN address, for example:
 
 ```bash
-EXPO_PUBLIC_API_URL=http://192.168.1.20:4000/api npm run dev:mobile
+EXPO_PUBLIC_API_URL=http://192.168.1.20:4000/api npm run dev:mobile -- --clear
 ```
 
 The mobile app is pinned to Expo SDK 54 so it works with the current App Store Expo Go app during the SDK 55 transition window.
@@ -59,4 +59,4 @@ The backend applies `backend/db/schema.sql` automatically on startup.
 
 ## Scanner Notes
 
-The mobile app supports camera capture, multi-photo image upload, manual OCR text entry, and barcode lookup. For best scan accuracy, upload one clear photo of the ingredients and one clear photo of the nutrition facts. Manual text entry is useful for repeatable testing; camera/image flows use the same backend classification pipeline after OCR.
+The mobile app supports camera capture, multi-photo image upload, manual OCR text entry, and barcode lookup. For best scan accuracy, upload one clear photo of the ingredients and one clear photo of the nutrition facts. BiteIQ converts iPhone photos to JPEG before OCR so HEIC images do not crash Tesseract. Manual text entry is useful for repeatable testing; camera/image flows use the same backend classification pipeline after OCR.

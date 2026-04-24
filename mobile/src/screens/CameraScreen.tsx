@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import { Barcode, Camera, ImagePlus, Send } from "lucide-react-native";
 import { api } from "../api/client";
 import { ActionButton } from "../components/ActionButton";
@@ -19,6 +20,11 @@ import type { Scan } from "../types";
 
 type Props = {
   onScanComplete: (scan: Scan) => Promise<void>;
+};
+
+type UploadImage = {
+  uri: string;
+  fileName?: string | null;
 };
 
 const sampleText =
@@ -50,11 +56,12 @@ export function CameraScreen({ onScanComplete }: Props) {
   }
 
   async function captureImage() {
-    const photo = await cameraRef.current?.takePictureAsync({ quality: 0.75 });
+    const photo = await cameraRef.current?.takePictureAsync({ quality: 0.9 });
     if (!photo?.uri) return;
+    const image = await prepareUploadImage(photo.uri, "captured-label.jpg");
     await completeScan(
       api.scanImage({
-        uri: photo.uri,
+        uri: image.uri,
         productName: productName || undefined,
         sugarGrams: parseOptionalNumber(sugarGrams),
         proteinGrams: parseOptionalNumber(proteinGrams)
@@ -65,21 +72,13 @@ export function CameraScreen({ onScanComplete }: Props) {
 
   async function pickImage() {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsMultipleSelection: true,
       selectionLimit: 6,
       quality: 0.92
     });
 
-    const images = result.canceled
-      ? []
-      : result.assets
-          .filter((asset) => Boolean(asset.uri))
-          .map((asset) => ({
-            uri: asset.uri,
-            fileName: asset.fileName,
-            mimeType: asset.mimeType
-          }));
+    const images = result.canceled ? [] : await prepareUploadImages(result.assets);
 
     if (images.length === 0) return;
     await completeScan(
@@ -139,11 +138,12 @@ export function CameraScreen({ onScanComplete }: Props) {
 
         <View style={styles.cameraShell}>
           {cameraReady ? (
-            <CameraPreview ref={cameraRef} style={styles.camera} facing="back">
+            <View style={styles.cameraFrame}>
+              <CameraPreview ref={cameraRef} style={styles.camera} facing="back" />
               <View style={styles.overlay}>
                 <View style={styles.guide} />
               </View>
-            </CameraPreview>
+            </View>
           ) : (
             <View style={styles.permissionBox}>
               <Camera color={colors.green} size={34} />
@@ -261,6 +261,27 @@ function parseOptionalNumber(value: string) {
   return Number.isFinite(parsed) && value.trim() !== "" ? parsed : undefined;
 }
 
+async function prepareUploadImages(assets: ImagePicker.ImagePickerAsset[]): Promise<UploadImage[]> {
+  const selectedAssets = assets.filter((asset) => Boolean(asset.uri)).slice(0, 6);
+  return Promise.all(
+    selectedAssets.map((asset, index) =>
+      prepareUploadImage(asset.uri, `ingredient-label-${index + 1}.jpg`)
+    )
+  );
+}
+
+async function prepareUploadImage(uri: string, fileName: string): Promise<UploadImage> {
+  const converted = await ImageManipulator.manipulateAsync(uri, [], {
+    compress: 0.92,
+    format: ImageManipulator.SaveFormat.JPEG
+  });
+
+  return {
+    uri: converted.uri,
+    fileName
+  };
+}
+
 const styles = StyleSheet.create({
   wrap: {
     flex: 1,
@@ -292,8 +313,11 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1
   },
+  cameraFrame: {
+    flex: 1
+  },
   overlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
     padding: 24
   },
