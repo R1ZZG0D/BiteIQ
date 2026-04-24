@@ -1,4 +1,4 @@
-# SKILLS.md – Food Intelligence App (Vegan/Vegetarian Scanner + Nutrition Tracker)
+# SKILLS.md – BiteIQ (Vegan/Vegetarian Scanner + Nutrition Tracker)
 
 ## Project Overview
 Build a cross-platform mobile application (iOS, Android, Web-ready) that allows users to:

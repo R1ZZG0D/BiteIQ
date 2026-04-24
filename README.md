@@ -1,4 +1,4 @@
-# Food Intelligence App
+# BiteIQ
 
 Cross-platform MVP for scanning food labels, classifying dietary suitability, and tracking daily sugar/protein intake. The implementation follows `SKILLS.md` with a React Native-first Expo app and a modular Node/Express backend.
 
@@ -38,7 +38,7 @@ The mobile app is pinned to Expo SDK 54 so it works with the current App Store E
 
 ## PostgreSQL
 
-Set `DATABASE_URL` in `.env` to use PostgreSQL. Without it, the backend writes local development data to `.data/food-intelligence.json`.
+Set `DATABASE_URL` in `.env` to use PostgreSQL. Without it, the backend writes local development data to `.data/biteiq.json`.
 
 ```bash
 DATABASE_URL=postgres://user:password@localhost:5432/food_intelligence

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Food Intelligence",
-    "slug": "food-intelligence",
-    "scheme": "foodintelligence",
+    "name": "BiteIQ",
+    "slug": "biteiq",
+    "scheme": "biteiq",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -13,13 +13,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.foodintelligence.mvp",
+      "bundleIdentifier": "app.biteiq.mvp",
       "infoPlist": {
-        "NSCameraUsageDescription": "Food Intelligence uses the camera to scan food ingredient labels."
+        "NSCameraUsageDescription": "BiteIQ uses the camera to scan food ingredient labels."
       }
     },
     "android": {
-      "package": "app.foodintelligence.mvp",
+      "package": "app.biteiq.mvp",
       "permissions": ["CAMERA"]
     },
     "plugins": ["expo-camera", "expo-image-picker"]

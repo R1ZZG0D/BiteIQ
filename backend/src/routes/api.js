@@ -41,7 +41,7 @@ export function createApiRouter(repository) {
   const router = express.Router();
 
   router.get("/health", (_req, res) => {
-    res.json({ ok: true, service: "food-intelligence-backend" });
+    res.json({ ok: true, service: "biteiq-backend" });
   });
 
   router.get("/ingredients", (_req, res) => {

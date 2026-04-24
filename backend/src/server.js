@@ -32,5 +32,5 @@ app.use((error, _req, res, _next) => {
 });
 
 app.listen(config.port, () => {
-  console.log(`Food Intelligence API listening on http://localhost:${config.port}`);
+  console.log(`BiteIQ API listening on http://localhost:${config.port}`);
 });

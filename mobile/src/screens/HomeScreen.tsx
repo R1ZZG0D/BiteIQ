@@ -33,7 +33,7 @@ export function HomeScreen({
       <View style={styles.header}>
         <View>
           <Text style={styles.eyebrow}>Today</Text>
-          <Text style={styles.title}>Food Intelligence</Text>
+          <Text style={styles.title}>BiteIQ</Text>
         </View>
         <View style={styles.preferencePill}>
           <Leaf color={colors.green} size={16} />

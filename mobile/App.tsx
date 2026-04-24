@@ -14,7 +14,7 @@ import { ResultScreen } from "./src/screens/ResultScreen";
 import { colors } from "./src/theme/colors";
 import type { DailySummary, Preference, Profile, Scan } from "./src/types";
 
-const onboardingKey = "food-intelligence:onboarded";
+const onboardingKey = "biteiq:onboarded";
 
 export default function App() {
   const [profile, setProfile] = useState<Profile | null>(null);

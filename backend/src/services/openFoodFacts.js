@@ -8,7 +8,7 @@ export async function fetchProductByBarcode(barcode) {
 
   const url = `${config.openFoodFactsBaseUrl}/product/${cleanBarcode}.json?fields=product_name,ingredients_text,nutriments`;
   const response = await fetch(url, {
-    headers: { "User-Agent": "FoodIntelligenceMVP/1.0" }
+    headers: { "User-Agent": "BiteIQMVP/1.0" }
   });
 
   if (!response.ok) {

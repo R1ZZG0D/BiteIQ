@@ -48,7 +48,7 @@ export function OnboardingScreen({ initialProfile, onComplete }: Props) {
           <View style={styles.iconShell}>
             <Target color={colors.green} size={30} strokeWidth={2.4} />
           </View>
-          <Text style={styles.title}>Food Intelligence</Text>
+          <Text style={styles.title}>BiteIQ</Text>
           <Text style={styles.subtitle}>Set your diet profile and daily nutrition targets.</Text>
         </View>
 
