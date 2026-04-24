@@ -2,7 +2,7 @@
   "name": "@food-intelligence/mobile",
   "version": "1.0.0",
   "private": true,
-  "main": "expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "dev": "expo start --port 8081",
     "start": "expo start",
