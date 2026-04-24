@@ -59,4 +59,4 @@ The backend applies `backend/db/schema.sql` automatically on startup.
 
 ## Scanner Notes
 
-The mobile app supports camera capture, image upload, manual OCR text entry, and barcode lookup. Manual text entry is useful for repeatable testing; camera/image flows use the same backend classification pipeline after OCR.
+The mobile app supports camera capture, multi-photo image upload, manual OCR text entry, and barcode lookup. For best scan accuracy, upload one clear photo of the ingredients and one clear photo of the nutrition facts. Manual text entry is useful for repeatable testing; camera/image flows use the same backend classification pipeline after OCR.

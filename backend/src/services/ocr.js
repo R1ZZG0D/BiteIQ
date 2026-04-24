@@ -1,4 +1,4 @@
-import { createWorker } from "tesseract.js";
+import { createWorker, PSM } from "tesseract.js";
 
 export async function extractTextFromImage(buffer, mimeType = "image/jpeg") {
   if (!buffer?.length) {
@@ -7,6 +7,11 @@ export async function extractTextFromImage(buffer, mimeType = "image/jpeg") {
 
   const worker = await createWorker("eng");
   try {
+    await worker.setParameters({
+      tessedit_pageseg_mode: PSM.AUTO,
+      preserve_interword_spaces: "1",
+      user_defined_dpi: "300"
+    });
     const result = await worker.recognize(Buffer.from(buffer), { mimeType });
     return result.data.text ?? "";
   } finally {

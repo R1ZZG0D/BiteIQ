@@ -9,7 +9,7 @@ import { getIngredientKnowledgeBase } from "../services/parser.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 8 * 1024 * 1024 }
+  limits: { fileSize: 8 * 1024 * 1024, files: 6 }
 });
 
 const preferenceSchema = z.enum(["Vegan", "Vegetarian", "Eggetarian", "Non-Vegetarian"]);
@@ -115,27 +115,40 @@ export function createApiRouter(repository) {
     }
   });
 
-  router.post("/scan/image", upload.single("labelImage"), async (req, res, next) => {
-    try {
-      if (!req.file) {
-        res.status(400).json({ error: "labelImage file is required." });
-        return;
-      }
-
-      const rawText = await extractTextFromImage(req.file.buffer, req.file.mimetype);
-      const saved = await saveAnalyzedScan(repository, {
-        rawText,
-        productName: req.body.productName,
-        nutritionInput: {
-          sugarGrams: req.body.sugarGrams,
-          proteinGrams: req.body.proteinGrams
+  router.post(
+    "/scan/image",
+    upload.fields([
+      { name: "labelImage", maxCount: 1 },
+      { name: "labelImages", maxCount: 6 }
+    ]),
+    async (req, res, next) => {
+      try {
+        const files = getUploadedLabelImages(req.files);
+        if (files.length === 0) {
+          res.status(400).json({ error: "At least one labelImage or labelImages file is required." });
+          return;
         }
-      });
-      res.status(201).json(saved);
-    } catch (error) {
-      next(error);
+
+        const rawTextParts = [];
+        for (const [index, file] of files.entries()) {
+          const imageText = await extractTextFromImage(file.buffer, file.mimetype);
+          rawTextParts.push(`Photo ${index + 1}:\n${imageText}`);
+        }
+
+        const saved = await saveAnalyzedScan(repository, {
+          rawText: rawTextParts.join("\n\n"),
+          productName: req.body.productName,
+          nutritionInput: {
+            sugarGrams: req.body.sugarGrams,
+            proteinGrams: req.body.proteinGrams
+          }
+        });
+        res.status(201).json(saved);
+      } catch (error) {
+        next(error);
+      }
     }
-  });
+  );
 
   router.post("/scan/barcode", async (req, res, next) => {
     try {
@@ -166,6 +179,12 @@ export function createApiRouter(repository) {
   });
 
   return router;
+}
+
+function getUploadedLabelImages(files) {
+  if (!files) return [];
+  if (Array.isArray(files)) return files;
+  return [...(files.labelImage ?? []), ...(files.labelImages ?? [])].slice(0, 6);
 }
 
 async function saveAnalyzedScan(repository, scanInput) {

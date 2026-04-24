@@ -50,13 +50,27 @@ export const api = {
     productName?: string;
     sugarGrams?: number;
     proteinGrams?: number;
+  }) =>
+    api.scanImages({
+      images: [{ uri: input.uri }],
+      productName: input.productName,
+      sugarGrams: input.sugarGrams,
+      proteinGrams: input.proteinGrams
+    }),
+  scanImages: (input: {
+    images: { uri: string; fileName?: string | null; mimeType?: string | null }[];
+    productName?: string;
+    sugarGrams?: number;
+    proteinGrams?: number;
   }) => {
     const formData = new FormData();
-    formData.append("labelImage", {
-      uri: input.uri,
-      name: "ingredient-label.jpg",
-      type: "image/jpeg"
-    } as unknown as Blob);
+    input.images.forEach((image, index) => {
+      formData.append("labelImages", {
+        uri: image.uri,
+        name: image.fileName ?? `ingredient-label-${index + 1}.jpg`,
+        type: image.mimeType ?? "image/jpeg"
+      } as unknown as Blob);
+    });
     if (input.productName) formData.append("productName", input.productName);
     if (input.sugarGrams !== undefined) formData.append("sugarGrams", String(input.sugarGrams));
     if (input.proteinGrams !== undefined) formData.append("proteinGrams", String(input.proteinGrams));

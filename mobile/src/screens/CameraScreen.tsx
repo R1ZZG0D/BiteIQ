@@ -66,13 +66,25 @@ export function CameraScreen({ onScanComplete }: Props) {
   async function pickImage() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.85
+      allowsMultipleSelection: true,
+      selectionLimit: 6,
+      quality: 0.92
     });
 
-    if (result.canceled || !result.assets[0]?.uri) return;
+    const images = result.canceled
+      ? []
+      : result.assets
+          .filter((asset) => Boolean(asset.uri))
+          .map((asset) => ({
+            uri: asset.uri,
+            fileName: asset.fileName,
+            mimeType: asset.mimeType
+          }));
+
+    if (images.length === 0) return;
     await completeScan(
-      api.scanImage({
-        uri: result.assets[0].uri,
+      api.scanImages({
+        images,
         productName: productName || undefined,
         sugarGrams: parseOptionalNumber(sugarGrams),
         proteinGrams: parseOptionalNumber(proteinGrams)
@@ -122,7 +134,7 @@ export function CameraScreen({ onScanComplete }: Props) {
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
           <Text style={styles.title}>Scan label</Text>
-          <Text style={styles.subtitle}>Camera OCR, image upload, barcode lookup, or text scan.</Text>
+          <Text style={styles.subtitle}>Capture one label or upload multiple nutrition and ingredient photos.</Text>
         </View>
 
         <View style={styles.cameraShell}>
@@ -230,7 +242,7 @@ export function CameraScreen({ onScanComplete }: Props) {
         {loading ? (
           <View style={styles.loadingBox}>
             <ActivityIndicator color={colors.green} />
-            <Text style={styles.loadingText}>Analyzing label...</Text>
+            <Text style={styles.loadingText}>Analyzing label photos...</Text>
           </View>
         ) : null}
 
@@ -272,7 +284,7 @@ const styles = StyleSheet.create({
     lineHeight: 20
   },
   cameraShell: {
-    height: 270,
+    height: 420,
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: colors.charcoal
@@ -286,7 +298,7 @@ const styles = StyleSheet.create({
     padding: 24
   },
   guide: {
-    height: 142,
+    height: 260,
     borderRadius: 8,
     borderWidth: 2,
     borderColor: "#FFFFFF",

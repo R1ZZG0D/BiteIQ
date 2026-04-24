@@ -10,6 +10,26 @@ const aliasIndex = ingredients
   )
   .sort((a, b) => b.normalizedAlias.length - a.normalizedAlias.length);
 
+const plantMilkPattern =
+  /\b(oat|almond|soy|soya|coconut|cashew|rice|pea|hemp|macadamia|plant based|plant-based|dairy free|dairy-free|non dairy|non-dairy)\s+milk\b|\bmilk\s+(alternative|beverage)\b/;
+
+const strongLabelSignals = [
+  {
+    ingredientId: "milk",
+    pattern:
+      /\b(grade a milk|whole milk|reduced fat milk|lowfat milk|low fat milk|skim milk|nonfat milk|evaporated milk|condensed milk|cultured milk|milkfat|milk chocolate|cream|yogurt|yoghurt|curd)\b/i,
+    shouldSkip: (normalizedText) => plantMilkPattern.test(normalizedText)
+  },
+  {
+    ingredientId: "egg",
+    pattern: /\b(whole egg|egg whites?|egg yolks?|albumen|ovalbumin)\b/i
+  },
+  {
+    ingredientId: "gelatin",
+    pattern: /\b(gelatin|gelatine)\b/i
+  }
+];
+
 export function cleanOcrText(rawText = "") {
   return rawText
     .replace(/[“”]/g, "\"")
@@ -50,6 +70,26 @@ export function extractIngredientSegment(rawText = "") {
   return stopAt >= 0 ? segment.slice(0, stopAt).trim() : segment.trim();
 }
 
+export function extractContainsSegments(rawText = "") {
+  const cleaned = cleanOcrText(rawText);
+  const matches = [...cleaned.matchAll(/\bcontains\s*[:\-]?\s*([^.;]{2,140})/gi)];
+
+  return matches
+    .map((match) => match[1] ?? "")
+    .map((segment) =>
+      segment
+        .replace(/\b(may contain|nutrition facts|serving size|calories|manufactured|distributed)\b.*$/i, "")
+        .trim()
+    )
+    .filter((segment) => {
+      const normalized = normalizeTerm(segment);
+      return (
+        !normalized.startsWith("2 or less") &&
+        /\b(milk|egg|whey|casein|lactose|gelatin|fish|shellfish|beef|pork|chicken)\b/.test(normalized)
+      );
+    });
+}
+
 export function splitIngredients(segment = "") {
   const sanitized = segment
     .replace(/\(([^)]*)\)/g, " $1 ")
@@ -86,7 +126,11 @@ export function matchKnownIngredient(parsedIngredient) {
     return { ...soyLecithin, matched_alias: "soy lecithin" };
   }
 
-  const match = aliasIndex.find(({ normalizedAlias }) => {
+  const match = aliasIndex.find(({ ingredient, normalizedAlias }) => {
+    if (ingredient.id === "milk" && plantMilkPattern.test(parsedIngredient.normalized)) {
+      return false;
+    }
+
     const aliasToken = ` ${normalizedAlias} `;
     return token.includes(aliasToken) || parsedIngredient.normalized === normalizedAlias;
   });
@@ -99,9 +143,20 @@ export function matchKnownIngredient(parsedIngredient) {
 export function parseIngredients(rawText = "") {
   const cleanedText = cleanOcrText(rawText);
   const ingredientSegment = extractIngredientSegment(cleanedText);
-  const split = splitIngredients(ingredientSegment);
+  const allergenIngredients = extractContainsSegments(cleanedText).flatMap((segment) =>
+    splitIngredients(segment).map((item) => ({
+      ...item,
+      original: `Contains ${item.original}`
+    }))
+  );
+  const labelSignals = extractStrongLabelSignals(cleanedText);
+  const split = dedupeParsedInputs([
+    ...splitIngredients(ingredientSegment),
+    ...allergenIngredients,
+    ...labelSignals
+  ]);
   const parsed = split.map((item) => {
-    const match = matchKnownIngredient(item);
+    const match = item.match ?? matchKnownIngredient(item);
     return {
       ...item,
       displayName: match?.name ?? item.original,
@@ -109,13 +164,14 @@ export function parseIngredients(rawText = "") {
       match
     };
   });
+  const dedupedParsed = dedupeMatchedIngredients(parsed);
 
   return {
     rawText: cleanedText,
     ingredientSegment,
-    ingredients: parsed,
-    unknownIngredients: parsed.filter((item) => !item.known).map((item) => item.original),
-    ambiguousIngredients: parsed
+    ingredients: dedupedParsed,
+    unknownIngredients: dedupedParsed.filter((item) => !item.known).map((item) => item.original),
+    ambiguousIngredients: dedupedParsed
       .filter((item) => item.match?.source_type === "ambiguous")
       .map((item) => item.displayName)
   };
@@ -123,4 +179,52 @@ export function parseIngredients(rawText = "") {
 
 export function getIngredientKnowledgeBase() {
   return ingredients;
+}
+
+function extractStrongLabelSignals(rawText = "") {
+  const normalizedText = normalizeTerm(rawText);
+
+  return strongLabelSignals.flatMap((signal) => {
+    if (signal.shouldSkip?.(normalizedText) || !signal.pattern.test(rawText)) {
+      return [];
+    }
+
+    const ingredient = ingredients.find((item) => item.id === signal.ingredientId);
+    if (!ingredient) return [];
+
+    return [
+      {
+        original: ingredient.name,
+        normalized: normalizeTerm(ingredient.name),
+        displayName: ingredient.name,
+        known: true,
+        match: {
+          ...ingredient,
+          matched_alias: "label signal"
+        }
+      }
+    ];
+  });
+}
+
+function dedupeParsedInputs(items) {
+  const seen = new Set();
+
+  return items.filter((item) => {
+    const key = item.match?.id ?? item.normalized;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function dedupeMatchedIngredients(items) {
+  const seen = new Set();
+
+  return items.filter((item) => {
+    const key = item.match?.id ?? item.normalized;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }

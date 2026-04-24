@@ -69,7 +69,7 @@ export type ScanResult = {
 export type Nutrition = {
   sugar_g: number;
   protein_g: number;
-  source: "label-input" | "ingredient-estimate";
+  source: "label-input" | "label-ocr" | "ingredient-estimate";
   notes: string;
 };
 

@@ -4,6 +4,7 @@ const proteinKeywords = ["protein", "whey", "casein", "soy", "pea", "chickpea", 
 export function estimateNutrition({ nutritionInput = {}, parsed }) {
   const providedSugar = toNumberOrNull(nutritionInput.sugarGrams);
   const providedProtein = toNumberOrNull(nutritionInput.proteinGrams);
+  const ocrNutrition = extractNutritionFromText(parsed.rawText);
 
   const ingredientNames = parsed.ingredients.map((item) => item.normalized);
   const sugarHits = ingredientNames.filter((name) =>
@@ -16,14 +17,26 @@ export function estimateNutrition({ nutritionInput = {}, parsed }) {
   const sugarEstimate = Math.min(42, Math.max(0, 2 + sugarHits * 7));
   const proteinEstimate = Math.min(38, Math.max(1, 3 + proteinHits * 5));
 
+  const sugar = providedSugar ?? ocrNutrition.sugar_g ?? sugarEstimate;
+  const protein = providedProtein ?? ocrNutrition.protein_g ?? proteinEstimate;
+  const source = getNutritionSource({ providedSugar, providedProtein, ocrNutrition });
+
   return {
-    sugar_g: providedSugar ?? sugarEstimate,
-    protein_g: providedProtein ?? proteinEstimate,
-    source: providedSugar !== null || providedProtein !== null ? "label-input" : "ingredient-estimate",
-    notes:
-      providedSugar !== null || providedProtein !== null
-        ? "Using nutrition values supplied with the scan."
-        : "Estimated from ingredient signals. Use barcode lookup or label values for higher accuracy."
+    sugar_g: sugar,
+    protein_g: protein,
+    source,
+    notes: getNutritionNotes(source, ocrNutrition)
+  };
+}
+
+export function extractNutritionFromText(rawText = "") {
+  const normalized = normalizeNutritionText(rawText);
+  const sugar = findMacroValue(normalized, "sugar");
+  const protein = findMacroValue(normalized, "protein");
+
+  return {
+    sugar_g: sugar,
+    protein_g: protein
   };
 }
 
@@ -67,6 +80,69 @@ function buildMacroSummary(name, consumed, goal) {
 function toNumberOrNull(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+}
+
+function normalizeNutritionText(rawText) {
+  return rawText
+    .replace(/[“”]/g, "\"")
+    .replace(/[’]/g, "'")
+    .replace(/\r/g, "\n")
+    .replace(/[|•]/g, " ")
+    .replace(/\bOg\b/g, "0g")
+    .replace(/\bO\s*g\b/gi, "0g")
+    .replace(/(\d)\s+g\b/gi, "$1g")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function findMacroValue(text, macro) {
+  const patterns =
+    macro === "sugar"
+      ? [
+          /\btotal\s+sugars?\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g\b/gi,
+          /\bsugars?\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g\b/gi
+        ]
+      : [/\bprotein\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*g\b/gi];
+
+  for (const pattern of patterns) {
+    const matches = [...text.matchAll(pattern)];
+    const match = matches.find((candidate) => {
+      const before = text.slice(Math.max(0, candidate.index - 18), candidate.index);
+      return macro !== "sugar" || !/\b(added|includes|alcohol)\s*$/.test(before);
+    });
+    const value = toNumberOrNull(match?.[1]);
+    if (value !== null && value <= 250) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+function getNutritionSource({ providedSugar, providedProtein, ocrNutrition }) {
+  if (providedSugar !== null || providedProtein !== null) return "label-input";
+  if (ocrNutrition.sugar_g !== null || ocrNutrition.protein_g !== null) return "label-ocr";
+  return "ingredient-estimate";
+}
+
+function getNutritionNotes(source, ocrNutrition) {
+  if (source === "label-input") {
+    return "Using nutrition values supplied with the scan.";
+  }
+
+  if (source === "label-ocr") {
+    const missing = [
+      ocrNutrition.sugar_g === null ? "sugar" : "",
+      ocrNutrition.protein_g === null ? "protein" : ""
+    ].filter(Boolean);
+
+    return missing.length > 0
+      ? `Read nutrition values from OCR and estimated missing ${missing.join(" and ")} from ingredients.`
+      : "Read sugar and protein directly from the nutrition label OCR.";
+  }
+
+  return "Estimated from ingredient signals. Use barcode lookup or clear nutrition label photos for higher accuracy.";
 }
 
 function toDateKey(date) {

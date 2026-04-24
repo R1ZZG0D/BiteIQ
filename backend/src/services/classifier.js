@@ -34,7 +34,7 @@ export function classifyIngredients(parsed, userPreference = "Vegan") {
   );
 
   let classificationLabel = labels.VEGAN;
-  if (!parsed.ingredientSegment || parsed.ingredients.length === 0) {
+  if (parsed.ingredients.length === 0) {
     classificationLabel = labels.UNCERTAIN;
   } else if (nonVegetarianMatches.length > 0) {
     classificationLabel = labels.NON_VEGETARIAN;
