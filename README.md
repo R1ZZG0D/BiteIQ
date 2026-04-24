@@ -34,6 +34,8 @@ For a physical mobile device, set `EXPO_PUBLIC_API_URL` to your machine's LAN ad
 EXPO_PUBLIC_API_URL=http://192.168.1.20:4000/api npm run dev:mobile
 ```
 
+The mobile app is pinned to Expo SDK 54 so it works with the current App Store Expo Go app during the SDK 55 transition window.
+
 ## PostgreSQL
 
 Set `DATABASE_URL` in `.env` to use PostgreSQL. Without it, the backend writes local development data to `.data/food-intelligence.json`.
