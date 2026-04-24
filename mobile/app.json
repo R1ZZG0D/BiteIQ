@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Food Intelligence",
+    "slug": "food-intelligence",
+    "scheme": "foodintelligence",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.foodintelligence.mvp",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Food Intelligence uses the camera to scan food ingredient labels."
+      }
+    },
+    "android": {
+      "package": "app.foodintelligence.mvp",
+      "permissions": ["CAMERA"]
+    },
+    "plugins": ["expo-camera", "expo-image-picker"]
+  }
+}

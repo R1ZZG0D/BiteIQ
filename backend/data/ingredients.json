@@ -1,0 +1,178 @@
+[
+  {
+    "id": "soy-lecithin",
+    "name": "soy lecithin",
+    "aliases": ["soy lecithin", "soya lecithin", "lecithin soy"],
+    "category": "plant",
+    "source_type": "plant",
+    "notes": "Soy-derived emulsifier."
+  },
+  {
+    "id": "lecithin",
+    "name": "lecithin",
+    "aliases": ["lecithin"],
+    "category": "additive",
+    "source_type": "ambiguous",
+    "notes": "Can be plant or egg-derived unless a source is specified."
+  },
+  {
+    "id": "mono-diglycerides",
+    "name": "mono- and diglycerides",
+    "aliases": ["mono and diglycerides", "mono- and diglycerides", "monoglycerides", "diglycerides"],
+    "category": "additive",
+    "source_type": "ambiguous",
+    "notes": "Can come from plant oils or animal fats."
+  },
+  {
+    "id": "natural-flavors",
+    "name": "natural flavors",
+    "aliases": ["natural flavor", "natural flavors", "flavouring", "flavoring"],
+    "category": "flavor",
+    "source_type": "ambiguous",
+    "notes": "Source is not always disclosed on labels."
+  },
+  {
+    "id": "whey",
+    "name": "whey",
+    "aliases": ["whey", "whey powder", "whey protein", "whey protein isolate"],
+    "category": "dairy",
+    "source_type": "animal",
+    "notes": "Milk-derived dairy protein."
+  },
+  {
+    "id": "casein",
+    "name": "casein",
+    "aliases": ["casein", "caseinate", "sodium caseinate", "calcium caseinate"],
+    "category": "dairy",
+    "source_type": "animal",
+    "notes": "Milk-derived protein."
+  },
+  {
+    "id": "milk",
+    "name": "milk",
+    "aliases": ["milk", "milk powder", "skim milk", "whole milk", "buttermilk", "milk solids"],
+    "category": "dairy",
+    "source_type": "animal",
+    "notes": "Dairy ingredient."
+  },
+  {
+    "id": "lactose",
+    "name": "lactose",
+    "aliases": ["lactose"],
+    "category": "dairy",
+    "source_type": "animal",
+    "notes": "Milk sugar."
+  },
+  {
+    "id": "cheese",
+    "name": "cheese",
+    "aliases": ["cheese", "cheddar", "parmesan", "mozzarella"],
+    "category": "dairy",
+    "source_type": "animal",
+    "notes": "Dairy ingredient."
+  },
+  {
+    "id": "butter",
+    "name": "butter",
+    "aliases": ["butter", "ghee", "clarified butter", "butterfat"],
+    "category": "dairy",
+    "source_type": "animal",
+    "notes": "Dairy fat."
+  },
+  {
+    "id": "egg",
+    "name": "egg",
+    "aliases": ["egg", "eggs", "egg white", "egg yolk", "albumen", "ovalbumin"],
+    "category": "egg",
+    "source_type": "animal",
+    "notes": "Egg-derived ingredient."
+  },
+  {
+    "id": "gelatin",
+    "name": "gelatin",
+    "aliases": ["gelatin", "gelatine"],
+    "category": "meat",
+    "source_type": "animal",
+    "notes": "Usually derived from animal collagen."
+  },
+  {
+    "id": "beef",
+    "name": "beef",
+    "aliases": ["beef", "beef fat", "tallow", "beef stock"],
+    "category": "meat",
+    "source_type": "animal",
+    "notes": "Meat-derived ingredient."
+  },
+  {
+    "id": "pork",
+    "name": "pork",
+    "aliases": ["pork", "lard", "bacon", "ham", "pork gelatin"],
+    "category": "meat",
+    "source_type": "animal",
+    "notes": "Meat-derived ingredient."
+  },
+  {
+    "id": "chicken",
+    "name": "chicken",
+    "aliases": ["chicken", "chicken stock", "chicken broth", "chicken fat"],
+    "category": "meat",
+    "source_type": "animal",
+    "notes": "Poultry-derived ingredient."
+  },
+  {
+    "id": "fish",
+    "name": "fish",
+    "aliases": ["fish", "fish oil", "anchovy", "anchovies", "tuna", "salmon", "cod"],
+    "category": "fish",
+    "source_type": "animal",
+    "notes": "Fish-derived ingredient."
+  },
+  {
+    "id": "shellfish",
+    "name": "shellfish",
+    "aliases": ["shrimp", "crab", "lobster", "oyster", "shellfish"],
+    "category": "fish",
+    "source_type": "animal",
+    "notes": "Seafood ingredient."
+  },
+  {
+    "id": "honey",
+    "name": "honey",
+    "aliases": ["honey", "bee pollen", "royal jelly"],
+    "category": "bee",
+    "source_type": "animal",
+    "notes": "Animal-produced sweetener."
+  },
+  {
+    "id": "carmine",
+    "name": "carmine",
+    "aliases": ["carmine", "cochineal", "natural red 4"],
+    "category": "additive",
+    "source_type": "animal",
+    "notes": "Color additive derived from insects."
+  },
+  {
+    "id": "sugar",
+    "name": "sugar",
+    "aliases": ["sugar", "cane sugar", "brown sugar", "glucose", "fructose", "dextrose", "syrup"],
+    "category": "sweetener",
+    "source_type": "plant",
+    "notes": "Plant-derived sweetener; may affect nutrition goals."
+  },
+  {
+    "id": "soy",
+    "name": "soy",
+    "aliases": ["soy", "soya", "soy protein", "soy isolate"],
+    "category": "plant",
+    "source_type": "plant",
+    "notes": "Plant protein."
+  },
+  {
+    "id": "pea-protein",
+    "name": "pea protein",
+    "aliases": ["pea protein", "pea protein isolate"],
+    "category": "plant",
+    "source_type": "plant",
+    "notes": "Plant protein."
+  }
+]

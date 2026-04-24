@@ -1,0 +1,30 @@
+[
+  {
+    "triggerCategory": "dairy",
+    "message": "Try an oat, almond, soy, or coconut-based dairy alternative."
+  },
+  {
+    "triggerCategory": "egg",
+    "message": "Look for egg-free products using flax, aquafaba, or plant binders."
+  },
+  {
+    "triggerCategory": "meat",
+    "message": "Choose a plant-based protein version made with soy, pea, mushroom, or lentils."
+  },
+  {
+    "triggerCategory": "fish",
+    "message": "Try seaweed-seasoned plant alternatives when a product uses fish or seafood."
+  },
+  {
+    "triggerCategory": "additive",
+    "message": "Pick a product that clearly labels plant-derived additives."
+  },
+  {
+    "triggerCategory": "flavor",
+    "message": "Choose brands that disclose vegan-certified flavor sources."
+  },
+  {
+    "triggerCategory": "sweetener",
+    "message": "Try a lower-sugar version or a product sweetened with fruit."
+  }
+]
