@@ -5,8 +5,14 @@
     "scheme": "biteiq",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "assetBundlePatterns": ["**/*"],
+    "splash": {
+      "image": "./assets/biteiq-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#03070D"
+    },
     "web": {
       "bundler": "metro",
       "output": "single"
@@ -20,7 +26,11 @@
     },
     "android": {
       "package": "app.biteiq.mvp",
-      "permissions": ["CAMERA"]
+      "permissions": ["CAMERA"],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#03070D"
+      }
     },
     "plugins": ["expo-camera", "expo-image-picker"]
   }

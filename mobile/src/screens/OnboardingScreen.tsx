@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ArrowRight, Target } from "lucide-react-native";
+import { ArrowRight } from "lucide-react-native";
 import { ActionButton } from "../components/ActionButton";
 import { PreferenceSelector } from "../components/PreferenceSelector";
 import { colors } from "../theme/colors";
 import type { Preference, Profile } from "../types";
+
+const biteIqLogo = require("../../assets/biteiq-logo.png");
 
 type Props = {
   initialProfile?: Profile | null;
@@ -45,8 +47,8 @@ export function OnboardingScreen({ initialProfile, onComplete }: Props) {
         style={styles.wrap}
       >
         <View style={styles.header}>
-          <View style={styles.iconShell}>
-            <Target color={colors.green} size={30} strokeWidth={2.4} />
+          <View style={styles.logoShell}>
+            <Image source={biteIqLogo} style={styles.logoImage} resizeMode="contain" />
           </View>
           <Text style={styles.title}>BiteIQ</Text>
           <Text style={styles.subtitle}>Set your diet profile and daily nutrition targets.</Text>
@@ -107,13 +109,18 @@ const styles = StyleSheet.create({
   header: {
     gap: 10
   },
-  iconShell: {
-    width: 58,
-    height: 58,
+  logoShell: {
+    width: 150,
+    height: 150,
     borderRadius: 8,
-    backgroundColor: colors.greenSoft,
+    backgroundColor: "#03070D",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    overflow: "hidden"
+  },
+  logoImage: {
+    width: "100%",
+    height: "100%"
   },
   title: {
     color: colors.ink,

@@ -1,9 +1,11 @@
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Image, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Camera, ChevronRight, Leaf, ShieldCheck } from "lucide-react-native";
 import { ActionButton } from "../components/ActionButton";
 import { MacroBar } from "../components/MacroBar";
 import { colors } from "../theme/colors";
 import type { DailySummary, Profile, Scan } from "../types";
+
+const biteIqLogo = require("../../assets/biteiq-logo.png");
 
 type Props = {
   profile: Profile;
@@ -31,9 +33,12 @@ export function HomeScreen({
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
     >
       <View style={styles.header}>
-        <View>
+        <View style={styles.brandRow}>
+          <Image source={biteIqLogo} style={styles.logoThumb} resizeMode="cover" />
+          <View>
           <Text style={styles.eyebrow}>Today</Text>
           <Text style={styles.title}>BiteIQ</Text>
+          </View>
         </View>
         <View style={styles.preferencePill}>
           <Leaf color={colors.green} size={16} />
@@ -125,6 +130,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12
+  },
+  brandRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    flexShrink: 1
+  },
+  logoThumb: {
+    width: 52,
+    height: 52,
+    borderRadius: 8,
+    backgroundColor: "#03070D"
   },
   eyebrow: {
     color: colors.muted,
